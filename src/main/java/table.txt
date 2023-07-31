@@ -12,3 +12,26 @@ CREATE TABLE PRODUCT(
     PROD_CONTENT VARCHAR(5000), 		##내용
     PROD_COMMENT VARCHAR(5000)		##메모
 );
+
+
+# mysql subquery
+
+select * 
+from (
+		select @rownum := @rownum + 1 as rn,
+				a.*
+		from (
+			select * 
+			from product 
+            where prod_writer = 'admin' 
+            order by prod_id desc
+		) as a, (select @rownum := 0) as b
+) as c
+where rn > 0 and rn <= 10;
+
+#mysql limit
+select *from product 
+-- where prod_writer= 'admin' 
+order by prod_id desc
+limit 0, 20; #데이터의 시작 값, 추출한 데이터의 개수 / limit 위치는 쿼리 마지막에 기재
+

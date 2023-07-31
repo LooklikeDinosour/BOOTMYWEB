@@ -28,9 +28,48 @@
     		
     	</insert>	
     	
+    	<!-- 
+    	동적쿼리 if, choose, foreach문장
+    	동적쿼리절에는 vo의 getter or map key가 전달됨
+    	 -->
     	<select id="getList" resultType="ProductVO">
-    		select * from product where prod_writer = #{prod_writer}
+    		select * 
+    		from product 
+    		where prod_writer = #{writer}
+    		<!-- 값이 있거나 공백이 아니면이라는조건 -->
+    		<if test="cri.searchName != '' and cri.searchName != null ">
+			and prod_name like concat('%', #{cri.searchName}, '%')
+    		</if>
+    		<if test="cri.searchContent != '' and cri.searchContent != null ">
+			and prod_content like concat('%', #{cri.searchContent}, '%')
+    		</if>
+			<if test="cri.startDate != '' and cri.startDate != null ">
+			<![CDATA[and prod_enddate >= #{cri.startDate}]]> <!-- 부등호친구들 문자열로 만들어주기 -->
+			</if>    		
+			<if test="cri.endDate != '' and cri.endDate != null ">
+			<![CDATA[and prod_enddate <= #{cri.endDate}]]>
+			</if>			
+			    		
+			order by   
+					
+			<if test ="cri.searchPrice == 'asc' ">
+    			prod_price asc,
+			</if>    		
+			<if test ="cri.searchPrice == 'desc' ">
+				prod_price desc,
+			</if>
+							
+			prod_id desc
+    		limit #{cri.pageStart}, #{cri.amount}
     	</select>
+    	
+		<!--     	
+		<choose>
+    		<when test=""></when>
+    		<when test=""></when>
+    		<when test=""></when>
+    	</choose> 
+    	-->
     	
     	<select id="getDetail" resultType="ProductVO">
     		select * from product where prod_id = #{prod_id}
@@ -53,4 +92,29 @@
     	<delete id="productDelete">
     		delete from product where prod_id = #{prod_id}
     	</delete>
+    	
+    	<select id="getTotal" resultType="int">
+    		select count(*) 
+    		from product 
+    		where prod_writer = #{writer}
+    		
+    				<if test="cri.searchName != '' and cri.searchName != null ">
+			and prod_name like concat('%', #{cri.searchName}, '%')
+    		</if>
+    		<if test="cri.searchContent != '' and cri.searchContent != null ">
+			and prod_content like concat('%', #{cri.searchContent}, '%')
+    		</if>
+			<if test="cri.startDate != '' and cri.startDate != null ">
+			<![CDATA[and prod_enddate >= #{cri.startDate}]]> <!-- 부등호친구들 문자열로 만들어주기 -->
+			</if>    		
+			<if test="cri.endDate != '' and cri.endDate != null ">
+			<![CDATA[and prod_enddate <= #{cri.endDate}]]>
+			</if>	
+    		
+    	</select>
+    	
+    	
+    	
+    	
+    	
     </mapper>
