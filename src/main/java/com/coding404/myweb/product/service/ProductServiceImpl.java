@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.coding404.myweb.command.CategoryVO;
 import com.coding404.myweb.command.ProductVO;
 import com.coding404.myweb.util.Criteria;
 
@@ -50,6 +51,21 @@ public class ProductServiceImpl implements ProductService {
 	public void productDelete(int prod_id) {
 		productMapper.productDelete(prod_id);
 	}
+ 
+	//카테고리 처리
+	
+	@Override
+	public ArrayList<CategoryVO> getCategory() {
+		
+		return productMapper.getCategory();
+	}
 
+	@Override
+	public ArrayList<CategoryVO> getCategoryChild(CategoryVO vo) {
+		
+		return productMapper.getCategoryChild(vo);
+	}
+
+	
 	
 }
