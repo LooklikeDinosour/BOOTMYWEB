@@ -35,3 +35,72 @@ select *from product
 order by prod_id desc
 limit 0, 20; #데이터의 시작 값, 추출한 데이터의 개수 / limit 위치는 쿼리 마지막에 기재
 
+select * 
+from product 
+where prod_writer = 'admin'
+order by   
+prod_id desc
+limit 0, 10;
+
+
+################################################################
+# 어디가 n인지 먼저 구분하고 붙인다. 지금은 product n 아래가 1이니까 product left join 아래테이블
+
+SELECT
+	   #A1.*,
+       #A2.CATEGORY_DETAIL_NM,
+       #A3.CATEGORY_DETAIL_NM,
+	   #CONCAT(A1.group_ID, A1.CATEGORY_ID, A1.category_LV,  A1.category_detail_LV) AS CATEGORY_KEY, ##카테고리 키
+       CONCAT(A1.group_ID, A1.CATEGORY_ID) AS CATEGORY_KEY, ##카테고리 키 (그룹 + 키 형태로 카테고리분류)
+ 	   CASE A1.category_parent_LV
+ 	        WHEN 0 THEN A1.category_detail_NM
+ 			WHEN 1 THEN CONCAT(A2.category_detail_NM,' > ', A1.category_detail_NM)
+ 			WHEN 2 THEN CONCAT(A3.category_detail_NM, ' > ', A2.category_detail_NM,' > ', A1.category_detail_NM)
+ 	   END as CATEGORY_NAV
+FROM PRODUCT_CATEGORY A1
+LEFT OUTER JOIN PRODUCT_CATEGORY A2
+ON A1.CATEGORY_PARENT_LV = A2.CATEGORY_LV AND A1.CATEGORY_DETAIL_PARENT_LV = A2.CATEGORY_DETAIL_LV AND A1.GROUP_ID = A2.GROUP_ID
+LEFT OUTER JOIN PRODUCT_CATEGORY A3
+ON A2.CATEGORY_PARENT_LV = A3.CATEGORY_LV AND A2.CATEGORY_DETAIL_PARENT_LV = A3.CATEGORY_DETAIL_LV
+ORDER BY CATEGORY_NAV ASC;
+
+select pro.*, a1.category_nav
+from product as pro
+left join (SELECT
+		   #A1.*,
+		   #A2.CATEGORY_DETAIL_NM,
+		   #A3.CATEGORY_DETAIL_NM,
+		   #CONCAT(A1.group_ID, A1.CATEGORY_ID, A1.category_LV,  A1.category_detail_LV) AS CATEGORY_KEY, ##카테고리 키
+		   CONCAT(A1.group_ID, A1.CATEGORY_ID) AS CATEGORY_KEY, ##카테고리 키 (그룹 + 키 형태로 카테고리분류)
+		   CASE A1.category_parent_LV
+		   WHEN 0 THEN A1.category_detail_NM
+		   WHEN 1 THEN CONCAT(A2.category_detail_NM,' > ', A1.category_detail_NM)
+		   WHEN 2 THEN CONCAT(A3.category_detail_NM, ' > ', A2.category_detail_NM,' > ', A1.category_detail_NM)
+		   END as CATEGORY_NAV
+		   FROM PRODUCT_CATEGORY A1
+		   LEFT OUTER JOIN PRODUCT_CATEGORY A2
+		   ON A1.CATEGORY_PARENT_LV = A2.CATEGORY_LV AND A1.CATEGORY_DETAIL_PARENT_LV = A2.CATEGORY_DETAIL_LV AND A1.GROUP_ID = A2.GROUP_ID
+		   LEFT OUTER JOIN PRODUCT_CATEGORY A3
+		   ON A2.CATEGORY_PARENT_LV = A3.CATEGORY_LV AND A2.CATEGORY_DETAIL_PARENT_LV = A3.CATEGORY_DETAIL_LV
+		   ORDER BY CATEGORY_NAV ASC ) as a1											
+on a1.category_key = pro.prod_category;
+
+
+
+
+
+
+
+
+
+
+############################파일업로드 테이블############################
+CREATE TABLE PRODUCT_UPLOAD (
+	UPLOAD_NO INT PRIMARY KEY auto_increment,
+	FILENAME varchar(100) not null, ##실제파일명
+	FILEPATH varchar(100) not null, ##폴더명
+	UUID varchar(50) not null, ##UUID명
+	REGDATE TIMESTAMP default now(),
+	PROD_ID INT, ##FK
+	PROD_WRITER VARCHAR(20) ##FK
+);

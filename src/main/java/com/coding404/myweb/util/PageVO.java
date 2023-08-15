@@ -32,7 +32,7 @@ public class PageVO {
 		this.page = cri.getPage();
 		this.amount = cri.getAmount();
 		this.total = total;
-	
+	 
 		//end페이지 계산
 		//page가 1을 가르킬 때, end = 10
 		//page가 11을 가르킬 때, end = 20
