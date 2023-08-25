@@ -37,14 +37,14 @@ public class PageTest {
 //		}
 //	}
 	
-	@Test
-	public void testCode02() {
-		
-		//Criteria cri = new Criteria(1, 10); //1번 페이지, 10개 데이터
-		//Criteria cri = new Criteria(2, 10); //2번 페이지, 10개 데이터
-		Criteria cri = new Criteria(1, 100); //1번 페이지, 100개 데이터
-		
-		ArrayList<ProductVO> list = productMapper.getList("admin", cri);
-		System.out.println(list.toString());
-	}
+//	@Test
+//	public void testCode02() {
+//		
+//		//Criteria cri = new Criteria(1, 10); //1번 페이지, 10개 데이터
+//		//Criteria cri = new Criteria(2, 10); //2번 페이지, 10개 데이터
+//		Criteria cri = new Criteria(1, 100); //1번 페이지, 100개 데이터
+//		
+//		ArrayList<ProductVO> list = productMapper.getList("admin", cri);
+//		System.out.println(list.toString());
+//	}
 }
